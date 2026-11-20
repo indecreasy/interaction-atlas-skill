@@ -112,7 +112,7 @@
   let report=null;
   function openReport(id) {
     const r=reqs.get(id);if(!r)return;
-    const mode=model.actions.some(a=>a.planned&&(a.requirements||[]).includes(id))?'plan':session.mode;
+    const mode=[...model.pages,...model.actions].some(item=>item.planned&&(item.requirements||[]).includes(id))?'plan':session.mode;
     const data=AtlasCore.impact(model,id,mode);
     report={r,data,mode};
     const names=ids=>ids.length?ids.map(v=>'<span>'+esc(title(typeof v==='string'?v:v.id))+'</span>').join(''):'<span>无单独登记的页面</span>';
@@ -196,13 +196,15 @@
     const positions=new Map();
     for(const [level,ids] of cols)ids.forEach((id,i)=>positions.set(id,{x:level*226,y:(i-(ids.length-1)/2)*88}));
     const min=Math.min(...levels.values()), max=Math.max(...levels.values());
-    return {positions,levels,edges:edges.filter(e=>levels.has(e.from)&&levels.has(e.to)),
+    const shownEdges = edges.filter(e=>levels.has(e.from)&&levels.has(e.to) &&
+      (e.from===center || e.to===center || Math.abs(levels.get(e.from)-levels.get(e.to))===1));
+    return {positions,levels,edges:shownEdges,
       bounds:{x:min*226-92,y:-(tallest-1)*44-78,w:(max-min)*226+184,h:(tallest-1)*88+133}};
   }
   function edgeDialog(edge) {
     const rows=edge.actions.map(a=>{
       const enabled=session.current===edge.from&&activeActions().some(item=>item.id===a.id);
-      return '<div class="case"><b>'+esc(a.label)+'</b>　<small>'+esc(a.kind||'')+'</small><div class="chips">'+(a.requirements||[]).map(r=>clickBtn('data-req',r,esc(r))).join('')+'</div>'+
+      return '<div class="case"><b>'+esc(a.label)+'</b><div class="chips">'+(a.requirements||[]).map(r=>clickBtn('data-req',r,esc(r))).join('')+'</div>'+
         (enabled?clickBtn('data-edge-act',a.id,'执行此操作'):'')+'</div>';
     });
     showDialog(title(edge.from)+' → '+title(edge.to),rows.join(''));
@@ -245,8 +247,20 @@
       const p=pages.get(id),current=id===session.current,onlyFuture=!model.actions.some(a=>!a.planned&&(a.from===id||a.to===id))&&id!==model.start;
       const g=svg('g',{transform:'translate('+pos.x+' '+pos.y+')',class:'vertex'+(current?' selected':'')+(onlyFuture?' future':''),tabindex:0,role:'button','aria-current':current?'page':'false','aria-label':p.title});
       const related=diagram.edges.find(e=>e.from===session.current&&e.to===id);
+      const upLink=diagram.edges.find(e=>e.from===id&&e.to===session.current);
+      const action=related?.actions[0]||upLink?.actions[0];
+      const isDetail=!current&&Boolean(action);
       const name=p.title.length>12?p.title.slice(0,11)+'…':p.title;
       g.append(svg('title',{},p.title),svg('rect',{class:'frame',x:-78,y:-25,width:156,height:50,rx:9}),svg('text',{class:'node-name',y:-1},name),svg('text',{class:'node-subtitle',y:16},current?p.group:(related?related.actions.map(a=>a.label).join(' / '):p.group).slice(0,18)));
+      if(isDetail){
+        const symbols={open:'↗',save:'✓',delete:'−',back:'↶',cancel:'×',change:'✎',close:'×',share:'↑'};
+        const symbol=symbols[action.kind]||'›';
+        const palette={save:['#dfeadd','#306746'],delete:['#f8dfd9','#933e37'],cancel:['#f4e3d7','#8d563c'],change:['#f2e8cd','#85651a'],share:['#e4e2f1','#64578d']};
+        const [bg,fg]=palette[action.kind]||['#e3eae5','#446951'];
+        const chip=svg('g',{'aria-hidden':'true','pointer-events':'none'});
+        chip.append(svg('circle',{cx:-63,cy:0,r:8.5,fill:bg}),svg('text',{x:-63,y:4,style:'font-size:12px;font-weight:700;fill:'+fg},symbol));
+        if(name.length<9)g.append(chip);
+      }
       function open(){
         if(dragged||current)return;
         const available=allowed.filter(a=>dest(a,session.stack.at(-2))===id);
