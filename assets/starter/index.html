@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>应用 · 交互地图</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="model.js"></script>
+  <script defer src="core.js"></script>
+  <script defer src="view.js"></script>
+</head>
+<body>
+  <header class="mast">
+    <div class="identity"><span class="book-sign" aria-hidden="true"><i></i><i></i><i></i></span><b id="productName">应用</b><span class="divider"></span><h1>交互地图</h1></div>
+    <nav aria-label="地图工具"><button id="openIndex">找页面</button><button id="openReq">需求与走查 <span aria-hidden="true">↗</span></button></nav>
+  </header>
+  <main>
+    <section class="canvas-panel" aria-label="页面关系">
+      <div class="pane-heading"><h2>页面关系</h2><div class="segment" aria-label="地图范围"><button id="liveBtn" aria-pressed="true">当前实现</button><button id="planBtn" aria-pressed="false">含规划</button></div></div>
+      <div class="stage" id="stage">
+        <svg id="network" role="group" aria-label="页面有向关系图，可拖动平移及缩放" tabindex="0"><defs>
+          <marker id="tip-normal" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#838b7a"/></marker>
+          <marker id="tip-plan" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#a16440"/></marker>
+        </defs><g id="world"></g></svg>
+        <div class="zoom"><button id="zoomOut" aria-label="缩小地图">−</button><output id="scale" aria-label="缩放比例"></output><button id="zoomIn" aria-label="放大地图">＋</button><button id="fit">适应画面</button></div>
+        <div class="legend"><span>现有路径</span><span>规划路径</span></div>
+      </div>
+      <div class="depths"><fieldset><legend>上游层数</legend><button data-side="up" data-delta="-1" aria-label="收起一层上游">−</button><output id="up"></output><button data-side="up" data-delta="1" aria-label="展开一层上游">＋</button></fieldset><fieldset><legend>下游层数</legend><button data-side="down" data-delta="-1" aria-label="收起一层下游">−</button><output id="down"></output><button data-side="down" data-delta="1" aria-label="展开一层下游">＋</button></fieldset></div>
+    </section>
+    <section class="device-panel" aria-label="产品预览">
+      <div class="pane-heading"><h2>交互预览</h2><button class="text-button" id="reset">回到起点</button></div>
+      <section id="player" aria-live="polite" hidden></section>
+      <div class="device-scroll">
+        <div class="device"><div class="status" aria-hidden="true">9:41 <i></i><span>▮▮▮　▰</span></div><div class="display" id="phone"></div><div class="home-indicator" aria-hidden="true"></div></div>
+        <div class="inspector"><div id="route" aria-label="当前路径"></div><p id="description"></p><div id="refs"></div></div>
+      </div>
+    </section>
+  </main>
+  <dialog id="drawer"><div class="dialog-head"><h2 id="dialogTitle"></h2><button type="button" id="closeDialog" aria-label="关闭">×</button></div><div id="dialogBody"></div></dialog>
+</body>
+</html>

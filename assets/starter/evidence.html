@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>读书清单 · 示例需求</title>
+<style>
+body{max-width:700px;margin:auto;padding:32px 22px 70px;background:#faf9f5;color:#262e27;font:16px/1.65 system-ui,sans-serif}
+h1{font:600 34px/1.3 Georgia,"Songti SC",serif;margin-bottom:8px}h2{font-size:19px;margin:0 0 7px}p{margin:4px 0 12px}
+section{padding:18px 0;border-top:1px solid #d9ddd3;scroll-margin-top:12px}a{color:#395c50}
+</style></head><body>
+<nav><a href="index.html">返回交互地图</a></nav><h1>读书清单 · 示例需求</h1>
+<p>以下规则只用于这个虚构应用。示例书名、笔记和摘句均为本模板编写。</p>
+<section id="r-entry"><h2>R-01 · 从不同入口打开同一本书</h2><p>书架、搜索结果和收藏夹共用一个书页。从书页返回时，回到本次进入的列表。搜索结果保留原查询。在收藏夹里，只有已收藏的书可以打开。</p>
+<p>检查方法：先从书架进入再返回，再从「河面」的搜索结果进入并返回，比较落点。</p></section>
+<section id="r-note"><h2>R-02 · 保存或取消阅读笔记</h2><p>进入编辑时，将已保存的文字复制为草稿。示例按钮会改写草稿。保存后回到书页，显示新笔记；取消后回到同一书页，原笔记保持。</p>
+<p>检查方法：先替换示例文字并取消，再重复一次并保存。重新打开编辑，核对已保存的内容。</p></section>
+<section id="r-saved"><h2>R-03 · 收藏书籍</h2><p>书页可加入或移除收藏。收藏立即生效，收藏夹只显示仍被收藏的书。书本身和笔记继续保留。</p>
+<p>检查方法：先在书页收藏，返回书架并进入收藏夹。打开这本书、移除收藏、返回收藏夹。</p></section>
+<section id="r-share"><h2>R-04 · 分享书签时选择是否附上笔记</h2><p>每次从书页新开分享预览时，默认附上笔记。可先切换选择再打开系统面板。取消系统分享回到同一次预览，保留选择。关闭预览回到原书页。再次打开预览恢复默认设置。</p>
+<p>检查方法：在预览中隐藏笔记，打开系统面板，再分别取消分享和关闭预览。</p></section>
+<section id="r-excerpt"><h2>R-05 · 把摘句加入书页</h2><p>待确认方案。规划视图在书页增加摘句入口，展示一条示例选段。保存后回到原书页并记录选段，取消则原样返回。当前实现层不出现该入口。</p>
+<p>检查方法：先在当前实现层查看书页，再换到规划层，分别试走保存与取消。</p></section>
+</body></html>
